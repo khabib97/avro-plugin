@@ -1,0 +1,23 @@
+{
+  "manifest_version": 2,
+
+  "name": "Avro Plugin",
+  "description": "This extension will help you to write bangle",
+  "version": "1.0",
+
+  "browser_action": {
+   "default_icon": "avro.png",
+   "default_popup": "index.html"
+  },
+
+  "content_scripts": [{
+    "js": ["jquery-3.4.1.min.js","avro-v1.1.4.min.js","main.js"],
+    "css":["main.css"],
+    "matches": ["https://*/*","http://*/*"]
+  }],
+
+  "permissions": [
+   "activeTab",
+   "storage"
+   ]
+}
