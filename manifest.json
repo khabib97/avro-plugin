@@ -2,22 +2,19 @@
   "manifest_version": 2,
 
   "name": "Avro Plugin",
-  "description": "This extension will help you to write bangle",
+  "description": "Extension for writing bangla. Thanks creator of Avro. Any suggesation please mail me : kawser.habib.dev@gmail.com",
   "version": "1.0",
 
   "browser_action": {
-   "default_icon": "avro.png",
+   "default_icon": "img/avro.png",
    "default_popup": "index.html"
   },
 
   "content_scripts": [{
-    "js": ["jquery-3.4.1.min.js","avro-v1.1.4.min.js","main.js"],
-    "css":["main.css"],
-    "matches": ["https://*/*","http://*/*"]
+    "js": ["js/jquery-3.4.1.min.js","js/avro-v1.1.4.min.js","js/main.js"],
+    "matches": ["*://*/*"]
   }],
 
-  "permissions": [
-   "activeTab",
-   "storage"
-   ]
+
+  "permissions": ["activeTab","declarativeContent","storage"]
 }
