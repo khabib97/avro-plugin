@@ -1,4 +1,4 @@
-#To install an extension temporarily:
+# To install an extension temporarily:
 
  1. open Firefox
  2. enter "about:debugging" in the URL bar
