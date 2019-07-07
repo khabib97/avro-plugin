@@ -12,7 +12,7 @@
 
   "content_scripts": [{
     "js": ["js/jquery-3.4.1.min.js","js/avro-v1.1.4.min.js","js/main.js"],
-    "matches": ["*://*/*"]
+    "matches": ["<all_urls>"]
   }],
 
 
