@@ -23,6 +23,20 @@ var buttonSwitcher = function(isON) {
     }
 };
 
+var timeoutId;
+let textArea = $('#emergency_input');
+textArea.on('input propertychange change', function() {
+clearTimeout(timeoutId);
+    timeoutId = setTimeout(function() {   
+        saveToDB(textArea.val());
+    }, 1000);
+});
+
+function saveToDB(textMsg)
+{
+    chrome.storage.sync.set({msg: textMsg},function(){});  
+}
+
 var _action = function(keyState){
     buttonSwitcher(keyState);
     switchLanguage(keyState);
@@ -50,5 +64,13 @@ window.onload = function() {
         }
         _action(keyState);
         console.log('keyState:' + keyState);
+    });
+
+    chrome.storage.sync.get('msg', function(data) {
+        if (data.msg === undefined) {
+            // do nothing
+        } else {
+            textArea.val(data.msg);
+        }
     });
 };
