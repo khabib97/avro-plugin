@@ -16,5 +16,5 @@
   }],
 
 
-  "permissions": ["activeTab","declarativeContent","storage"]
+  "permissions": ["declarativeContent","storage"]
 }
