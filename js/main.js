@@ -1,67 +1,60 @@
 let onOffButton = $('#on_off_key');
 let keyState;
 
-var onTheButton = function(){
-        onOffButton.html(" ON ");
-    };
+var onTheButton = function() {
+    onOffButton.html(" ON ");
+};
 
-    var offTheButton = function(){
-        onOffButton.html("OFF");
-    };
+var offTheButton = function() {
+    onOffButton.html("OFF");
+};
 
-    var switchLanguage = function(isON){
-        $('textarea, input').avro({'bangla':isON});
-    };
+var switchLanguage = function(isON) {
+    $('textarea, input').avro({'bangla': isON});
+};
 
-    var buttonSwitcher = function(isON){
-        if(isON){
-            onTheButton();
-        }else{
-            offTheButton();
-        }
+var buttonSwitcher = function(isON) {
+    if (isON) {
+        onTheButton();
+    } else {
+        offTheButton();
     }
+}
 
-    onOffButton.on('click',function(){
-        let gettingData = browser.storage.sync.get("data");
-        gettingData.then(onGot,onError);
-        /*let isON = data.isON;
-        console.log(isON);
-        buttonSwitcher(!isON);
-        switchLanguage(!isON);
-        browser.storage.sync.set({
-            data: {isON: !isON}
-        });*/
-        //location.reload(true);
-        
-    });
+function action(keyState) {
+    buttonSwitcher(keyState);
+    switchLanguage(keyState);
+    browser.storage.local.set({data: {isON: keyState}});
+}
 
-    function onGot(item) {
-        console.log(item);
-    }
-      
-    function onError(error) {
-        console.log(`Error: ${error}`);
-    }
+function onError(error) {
+    console.log(`Error Controller: ${error}`);
+}
+
+onOffButton.on('click', function() {
+    let gettingData = browser.storage.local.get("data");
+    gettingData.then(function(item) {
+        console.log("onclick Call");
+        console.log("onclick value : " + item.data.isON);
+        console.log(item.data.isON);
+        keyState = !item.data.isON;
+        action(keyState);
+        location.reload(true);
+    }, onError);
+});
 
 window.onload = function() {
-    let gettingData = browser.storage.sync.get("data");
-    gettingData.then(onGot,onError);
-    /*let isON = data.isON;
-    console.log(data);
-    
-    if(isON === undefined){
-        keyState = false;
-    }
-    else{
-        keyState = isON;
-         
-    }*/
-    browser.storage.sync.set({
-        data: {isON: keyState}
-    });
-    /*buttonSwitcher(isON);
-    switchLanguage(keyState);*/
-    
+    let gettingData = browser.storage.local.get("data");
+    gettingData.then(function(item) {
+        console.log("Init Call");
+        //console.log("init value : " + item.data.isON);
+        if (item.data === undefined) {
+            keyState = false;
+        } else {
+            keyState = item.data.isON;
+        }
+        action(keyState);
+    }, onError);
 };
 
 
