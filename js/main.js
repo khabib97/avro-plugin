@@ -22,26 +22,46 @@ var onTheButton = function(){
     }
 
     onOffButton.on('click',function(){
-        chrome.storage.sync.get('isON', function(data) {
-            buttonSwitcher(!data.isON);
-            switchLanguage(!data.isON);
-            chrome.storage.sync.set({isON: !data.isON},function(){});
-            location.reload(true);
-        });
+        let gettingData = browser.storage.sync.get("data");
+        gettingData.then(onGot,onError);
+        /*let isON = data.isON;
+        console.log(isON);
+        buttonSwitcher(!isON);
+        switchLanguage(!isON);
+        browser.storage.sync.set({
+            data: {isON: !isON}
+        });*/
+        //location.reload(true);
+        
     });
 
+    function onGot(item) {
+        console.log(item);
+    }
+      
+    function onError(error) {
+        console.log(`Error: ${error}`);
+    }
+
 window.onload = function() {
-    chrome.storage.sync.get('isON', function(data) {
-        if(data.isON === undefined){
-            keyState = false;
-            offTheButton();
-        }
-        else{
-            keyState = data.isON;
-            buttonSwitcher(data.isON); 
-        }
-        switchLanguage(keyState);
+    let gettingData = browser.storage.sync.get("data");
+    gettingData.then(onGot,onError);
+    /*let isON = data.isON;
+    console.log(data);
+    
+    if(isON === undefined){
+        keyState = false;
+    }
+    else{
+        keyState = isON;
+         
+    }*/
+    browser.storage.sync.set({
+        data: {isON: keyState}
     });
+    /*buttonSwitcher(isON);
+    switchLanguage(keyState);*/
+    
 };
 
 
