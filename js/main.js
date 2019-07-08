@@ -1,76 +1,84 @@
-let onOffButton = $('#on_off_key');
+let checkBox = $("#on_off");
 let keyState;
 
+var timeoutId;
+let textArea = $("#emergency_input");
+
 var onTheButton = function() {
-    onOffButton.html(" ON ");
+  checkBox.prop("checked", true);
 };
 
 var offTheButton = function() {
-    onOffButton.html("OFF");
+  checkBox.prop("checked", false);
 };
 
 var switchLanguage = function(isON) {
-    $('textarea, input').avro({
-        'bangla': isON
-    });
+  $("textarea, input").avro({
+    bangla: isON
+  });
 };
 
 var buttonSwitcher = function(isON) {
-    if (isON) {
-        onTheButton();
-    } else {
-        offTheButton();
-    }
+  if (isON) {
+    onTheButton();
+  } else {
+    offTheButton();
+  }
 };
 
-var timeoutId;
-let textArea = $('#emergency_input');
-textArea.on('input propertychange change', function() {
-clearTimeout(timeoutId);
-    timeoutId = setTimeout(function() {   
-        saveToDB(textArea.val());
-    }, 1000);
-});
-
-function saveToDB(textMsg)
-{
-    chrome.storage.sync.set({msg: textMsg},function(){});  
+var iconSwither = function(isON){
+    if(isON){
+        chrome.browserAction.setIcon({path: "img/avro.png"});
+    }else{
+        chrome.browserAction.setIcon({path: "img/avro_disable.png"});
+    }
 }
 
-var _action = function(keyState){
-    buttonSwitcher(keyState);
-    switchLanguage(keyState);
-    chrome.storage.sync.set({
-        isON: keyState
-    }, function() {});
+textArea.on("input propertychange change", function() {
+  clearTimeout(timeoutId);
+  timeoutId = setTimeout(function() {
+    saveToDB(textArea.val());
+  }, 1000);
+});
+
+var saveToDB = function(textMsg) {
+  chrome.storage.sync.set({ msg: textMsg }, function() {});
 };
 
-onOffButton.on('click', function() {
-    chrome.storage.sync.get('isON', function(data) {
-        keyState = !data.isON;
-        _action(keyState);
-        location.reload(true);
-    });
-    
+var _action = function(keyState) {
+  buttonSwitcher(keyState);
+  switchLanguage(keyState);
+  iconSwither(keyState);
+  chrome.storage.sync.set(
+    {
+      isON: keyState
+    },
+    function() {}
+  );
+};
+
+checkBox.change(function() {
+  chrome.storage.sync.get("isON", function(data) {
+    keyState = !data.isON;
+    _action(keyState);
     location.reload(true);
+  });
 });
 
 window.onload = function() {
-    chrome.storage.sync.get('isON', function(data) {
-        if (data.isON === undefined) {
-            keyState = false;
-        } else {
-            keyState = data.isON;
-        }
-        _action(keyState);
-        console.log('keyState:' + keyState);
-    });
+  chrome.storage.sync.get("isON", function(data) {
+    if (data.isON === undefined) {
+      keyState = false;
+    } else {
+      keyState = data.isON;
+    }
+    _action(keyState);
+    console.log("keyState:" + keyState);
+  });
 
-    chrome.storage.sync.get('msg', function(data) {
-        if (data.msg === undefined) {
-            // do nothing
-        } else {
-            textArea.val(data.msg);
-        }
-    });
+  chrome.storage.sync.get("msg", function(data) {
+    if (data.msg !== undefined) {
+      textArea.val(data.msg);
+    }
+  });
 };
